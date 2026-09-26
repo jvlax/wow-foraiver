@@ -1,0 +1,31 @@
+version: 2
+
+project_name: wow-foraiver
+
+builds:
+  - id: wow-foraiver
+    main: .
+    binary: wow-foraiver
+    env:
+      - CGO_ENABLED=0
+    goos: [linux, darwin, windows]
+    goarch: [amd64, arm64]
+    ldflags:
+      - -s -w -X main.version={{.Version}}
+
+archives:
+  - formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  use: github
+
+release:
+  footer: |
+    Binaries are built by GoReleaser from the tagged commit and attested with
+    GitHub OIDC build provenance — verify with `gh attestation verify`.
