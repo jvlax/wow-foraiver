@@ -6,6 +6,7 @@ import (
 	"context"
 	"fmt"
 	"net/http"
+	"time"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
@@ -89,10 +90,18 @@ func ServeStdio(ctx context.Context, version string) error {
 }
 
 // ServeHTTP runs the streamable-HTTP endpoint (the hosted shape).
+//
+// Localhost DNS-rebinding protection is off here by design: the hosted
+// endpoint sits behind an ingress that proxies via loopback, so every
+// legitimate request carries a public Host header. Rebinding protection
+// belongs to the stdio/local shape, which doesn't pass through here.
 func ServeHTTP(addr, version string) error {
 	handler := mcp.NewStreamableHTTPHandler(func(*http.Request) *mcp.Server {
 		return New(version)
-	}, nil)
+	}, &mcp.StreamableHTTPOptions{
+		DisableLocalhostProtection: true,
+		SessionTimeout:             10 * time.Minute,
+	})
 	mux := http.NewServeMux()
 	mux.Handle("/mcp", handler)
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, _ *http.Request) {
