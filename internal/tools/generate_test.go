@@ -58,54 +58,6 @@ func TestScaffold(t *testing.T) {
 	}
 }
 
-func TestGamepadLayoutDefaults(t *testing.T) {
-	b := GamepadLayout(GamepadSpec{})
-	if len(b.Files) != 2 {
-		t.Fatalf("want 2 files, got %d", len(b.Files))
-	}
-	lua := b.Files[1].Content
-	// The full base layout must be present.
-	for _, want := range []string{
-		`["PADA"] = "JUMP"`,
-		`["SHIFT-PADX"] = "ACTIONBUTTON8"`,
-		`["SHIFT-PADDRIGHT"] = "ACTIONBUTTON12"`,
-		`["PADRSHOULDER"] = "TARGETNEARESTENEMY"`,
-		`["PADRTRIGGER"] = "TOGGLEAUTORUN"`,
-		`["GamePadEmulateShift"] = "PADLSHOULDER"`,
-		`SaveBindings(GetCurrentBindingSet())`,
-		"local VERSION = 1",
-		"SLASH_TILLER1",
-	} {
-		if !strings.Contains(lua, want) {
-			t.Errorf("layout lua missing %q", want)
-		}
-	}
-	if !strings.Contains(b.Files[0].Content, "## SavedVariables: TillerDB") {
-		t.Error("toc missing SavedVariables")
-	}
-}
-
-func TestGamepadLayoutCustom(t *testing.T) {
-	b := GamepadLayout(GamepadSpec{
-		AddonName: "Helm",
-		Version:   3,
-		Bindings:  map[string]string{"PADA": "TARGETSELF"},
-	})
-	lua := b.Files[1].Content
-	if !strings.Contains(lua, "local VERSION = 3") {
-		t.Error("custom version not honored")
-	}
-	if !strings.Contains(lua, `["PADA"] = "TARGETSELF"`) {
-		t.Error("custom binding not honored")
-	}
-	if strings.Contains(lua, "ACTIONBUTTON1") {
-		t.Error("custom bindings should replace, not merge, the base layout")
-	}
-	if !strings.Contains(lua, "SLASH_HELM1") {
-		t.Error("slash command not derived from addon name")
-	}
-}
-
 func TestDuplexKit(t *testing.T) {
 	b := DuplexKit("")
 	if len(b.Files) != 3 {

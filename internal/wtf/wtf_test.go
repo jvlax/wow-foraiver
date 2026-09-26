@@ -29,9 +29,9 @@ func TestApplyRewritesAndAppends(t *testing.T) {
 	got, _ := os.ReadFile(cfg)
 	s := string(got)
 	for _, want := range []string{
-		`SET GxApi "D3D12"`,          // untouched line survives
-		`SET textLocale "enUS"`,      // untouched line survives
-		`SET GamePadEnable "1"`,      // rewritten in place
+		`SET GxApi "D3D12"`,                      // untouched line survives
+		`SET textLocale "enUS"`,                  // untouched line survives
+		`SET GamePadEnable "1"`,                  // rewritten in place
 		`SET GamePadEmulateShift "PADLSHOULDER"`, // appended
 	} {
 		if !strings.Contains(s, want) {

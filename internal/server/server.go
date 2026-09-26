@@ -42,15 +42,9 @@ func New(version string) *mcp.Server {
 		return nil, tools.Scaffold(in.Name, in.Notes), nil
 	})
 
-	mcp.AddTool(s, &mcp.Tool{
-		Name: "gamepad_layout",
-		Description: "Generate a versioned gamepad-rigging addon: enables the client's native " +
-			"gamepad support and binds a full controller layout. Empty spec = the base layout " +
-			"(LB shift-layer, 12 action buttons on face+dpad, RB targeting, RT autorun). " +
-			"Pass bindings/cvars to replace it; bump version to roll changes out.",
-	}, func(ctx context.Context, req *mcp.CallToolRequest, in tools.GamepadSpec) (*mcp.CallToolResult, tools.Bundle, error) {
-		return nil, tools.GamepadLayout(in), nil
-	})
+	// gamepad_layout lived here until v0.2.0 — retired because the client's
+	// native gamepad UI (modifiers included) turned out smoother than our
+	// rigging. The doctrine working as intended: the native path won.
 
 	type duplexIn struct {
 		AddonName string `json:"addon_name,omitempty" jsonschema:"defaults to Duplex"`

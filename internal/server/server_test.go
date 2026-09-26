@@ -3,7 +3,6 @@ package server
 import (
 	"context"
 	"encoding/json"
-	"strings"
 	"testing"
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
@@ -40,7 +39,7 @@ func TestToolsPublished(t *testing.T) {
 			t.Errorf("tool %s has no description — the MCP is where we publish, descriptions are the docs", tool.Name)
 		}
 	}
-	for _, want := range []string{"addon_scaffold", "gamepad_layout", "duplex_kit", "know_query"} {
+	for _, want := range []string{"addon_scaffold", "duplex_kit", "know_query"} {
 		if !got[want] {
 			t.Errorf("tool %s not published (have %v)", want, got)
 		}
@@ -65,19 +64,6 @@ func callTool(t *testing.T, cs *mcp.ClientSession, name string, args map[string]
 		t.Fatalf("%s: %v", name, err)
 	}
 	return out
-}
-
-func TestGamepadLayoutRoundTrip(t *testing.T) {
-	cs := connect(t)
-	out := callTool(t, cs, "gamepad_layout", map[string]any{})
-	files, _ := out["files"].([]any)
-	if len(files) != 2 {
-		t.Fatalf("want 2 files, got %d", len(files))
-	}
-	lua := files[1].(map[string]any)["content"].(string)
-	if !strings.Contains(lua, `["SHIFT-PADDRIGHT"] = "ACTIONBUTTON12"`) {
-		t.Error("base layout incomplete over the wire")
-	}
 }
 
 func TestKnowQueryRoundTrip(t *testing.T) {

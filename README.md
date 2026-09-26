@@ -26,7 +26,6 @@ feedback.**
 | MCP tool | What it does |
 |---|---|
 | `addon_scaffold` | A minimal working addon — TOC + entry file, ready to grow |
-| `gamepad_layout` | Full controller rigging: native gamepad CVars + a complete versioned binding layout |
 | `duplex_kit` | The full-duplex primitive: `payload.lua` in via `/reload`, `Report()` out via SavedVariables |
 | `know_query` | The client API truth — 5883 globals, 269 `C_` namespaces, dumped from the running client |
 
